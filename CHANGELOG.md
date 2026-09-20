@@ -4,6 +4,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-09-21
+
+### Changed — Glama Benchmark Tier-S Quality Elevation (5.0 / 5.0 Standard)
+- **Standardized All 11 Tools to Strict `ink_<verb>_<noun>` Pattern**:
+  - `ink_create_base` (Scaffold Web Application Foundation)
+  - `ink_generate_palette_tokens` *(renamed from `ink_design_palette_tokens`)*
+  - `ink_craft_component` (Craft UI Component with Tactile Physics)
+  - `ink_build_threejs_experience` *(renamed from `ink_threejs_experience`)*
+  - `ink_generate_script_logic` *(renamed from `ink_script_logic`)*
+  - `ink_audit_security` *(renamed from `ink_security_audit`)*
+  - `ink_validate_design` (Validate Design Craft & Contrast Compliance)
+  - `ink_run_python_tests` *(renamed from `ink_python_test_runner`)*
+  - `ink_capture_viewport` (Capture Multi-Viewport Responsive Snapshots)
+  - `ink_inspect_website_style` (Inspect & Reverse-Engineer Website Style)
+  - `ink_import_custom_assets` (Import & Configure Web Fonts and Assets)
+- **Explicit MCP Tool Annotations**:
+  - Attached `readOnlyHint`, `destructiveHint`, `idempotentHint`, and `openWorldHint` across all 11 tools using modern `server.registerTool(...)`.
+- **Typed Output Schemas & Dual Result Envelope Output**:
+  - Added Zod `OutputSchema` definitions for all 11 tools in `src/contracts/index.ts`.
+  - Returned both text serialized JSON in `content` and validated typed objects in `structuredContent`.
+- **Comprehensive 4-Part Tool Descriptions**:
+  - Rewrote every tool description into structured sections: `PURPOSE`, `BEHAVIOR`, `USAGE GUIDELINES` (When to use, When NOT to use, Alternatives), and `RETURNS`.
+- **Crisp Disambiguation for Verification Tools**:
+  - Defined clear boundaries between `ink_validate_design` (fast in-memory CSS/craft/bidi linting), `ink_audit_security` (OWASP DOM XSS & CSP auditing), and `ink_run_python_tests` (external Python AST/matrix testing).
+- **Glama MCP Registry Manifest**:
+  - Added `glama.json` with schema validation (`https://glama.ai/mcp/schemas/server.json`) for maintainer ownership claiming (`MarwanDevSpace`, `MarwanDevMCP`).
+
 ## [1.1.0] - 2026-09-20
 
 ### Added

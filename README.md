@@ -24,21 +24,23 @@ Most AI-generated web interfaces look generic, repetitive, and bland:
 
 ---
 
-## 🛠️ Tool Suite (`tools/list`)
+## 🛠️ Tool Suite (`tools/list` — 11 Standardized Tools)
 
-| Tool Name | Action | Description |
-|---|---|---|
-| `ink_create_base` | Scaffolding | Scaffolds a complete modern web project (Semantic HTML5, CSS architecture, OKLCH tokens, main.js) |
-| `ink_design_palette_tokens` | Color & Tokens | Generates OKLCH palettes, CSS custom properties, and WCAG AAA contrast ratios |
-| `ink_craft_component` | UI Components | Crafts tactile components (`glass-card`, `tactile-button`, `hero-section`, `navigation-bar`, etc.) |
-| `ink_threejs_experience` | 3D WebGL | Generates memory-safe Three.js canvas experiences (`particle-constellation`, `geometric-wireframe`) |
-| `ink_script_logic` | Modern JS/TS | Generates zero-dependency logic modules (`state-store`, `event-bus`, `scroll-observer`, `form-validator`) |
-| `ink_security_audit` | Security Audit | Scans code for DOM XSS, eval, token leakage in localStorage, and generates tailored CSP headers |
-| `ink_validate_design` | Design QA | Computes Craft Grade (S, A, B, C), checks anti-slop rules, evaluates contrast, and audits RTL/LTR logical properties |
-| `ink_python_test_runner` | External Verification | Executes the dedicated Python testing suite (`ink_verifier`) via stdin JSON pipeline |
-| `ink_capture_viewport` | Multi-Viewport QA | Captures 16:9 Desktop, 9:16 Story, and 390x844 Mobile snapshots with automated overflow checks |
-| `ink_inspect_website_style` | Reverse-Engineering | Deconstructs any website (URL or HTML/CSS) into an OKLCH palette, font hierarchy, and design blueprint |
-| `ink_import_custom_assets` | Dynamic Assets | Configures dynamic Google Fonts imports (Arabic & Latin) and generates CSS variables with optical line-heights |
+All 11 tools strictly follow the MCP Glama Benchmark standards (`ink_<verb>_<noun>`, explicit MCP tool annotations, typed output schemas, and operational usage guidelines):
+
+| Canonical Tool Name | Title | Verb + Noun | Annotations | Output Schema | Purpose |
+|---|---|---|---|---|---|
+| `ink_create_base` | Scaffold Web Application Foundation | create + base | `readOnlyHint: true` | `CreateBaseOutputSchema` | Scaffolds complete semantic HTML5, CSS architecture, OKLCH tokens, and main.js |
+| `ink_generate_palette_tokens` | Generate OKLCH Palette & Design Tokens | generate + palette_tokens | `readOnlyHint: true` | `PaletteTokensOutputSchema` | Generates bespoke OKLCH palettes, CSS custom properties, and WCAG AAA contrast ratios |
+| `ink_craft_component` | Craft UI Component with Tactile Physics | craft + component | `readOnlyHint: true` | `CraftComponentOutputSchema` | Crafts tactile components (`glass-card`, `tactile-button`, `hero-section`, `navigation-bar`, etc.) |
+| `ink_build_threejs_experience` | Build 3D WebGL Canvas Experience | build + threejs_experience | `readOnlyHint: true` | `ThreejsExperienceOutputSchema` | Generates memory-safe Three.js canvas experiences (`particle-constellation`, `geometric-wireframe`) |
+| `ink_generate_script_logic` | Generate Modular Architecture Logic | generate + script_logic | `readOnlyHint: true` | `ScriptLogicOutputSchema` | Generates zero-dependency logic modules (`state-store`, `event-bus`, `scroll-observer`, `form-validator`) |
+| `ink_audit_security` | Audit Frontend Code Security & Headers | audit + security | `readOnlyHint: true` | `SecurityAuditOutputSchema` | Scans code for DOM XSS, eval, token leakage in localStorage, and generates tailored CSP headers |
+| `ink_validate_design` | Validate Design Craft & Contrast Compliance | validate + design | `readOnlyHint: true` | `ValidateDesignOutputSchema` | Computes Craft Grade (S, A, B, C), checks anti-slop rules, evaluates contrast, and audits RTL/LTR logical properties |
+| `ink_run_python_tests` | Run Python AST & Contrast Verification Suite | run + python_tests | `readOnlyHint: true` | `PythonTestRunnerOutputSchema` | Executes the dedicated Python testing suite (`ink_verifier`) via stdin JSON pipeline |
+| `ink_capture_viewport` | Capture Multi-Viewport Responsive Snapshots | capture + viewport | `readOnlyHint: false` | `CaptureViewportOutputSchema` | Captures 16:9 Desktop, 9:16 Story, and 390x844 Mobile snapshots with automated overflow checks |
+| `ink_inspect_website_style` | Inspect & Reverse-Engineer Website Style | inspect + website_style | `readOnlyHint: true` | `InspectWebsiteStyleOutputSchema` | Deconstructs any website (URL or HTML/CSS) into an OKLCH palette, font hierarchy, and design blueprint |
+| `ink_import_custom_assets` | Import & Configure Web Fonts and Assets | import + custom_assets | `readOnlyHint: true` | `ImportCustomAssetsOutputSchema` | Configures dynamic Google Fonts imports (Arabic & Latin) and generates CSS variables with optical line-heights |
 
 ---
 
@@ -123,7 +125,7 @@ Add to your workspace `.agents/mcp_config.json` or global config:
 
 ## 🐍 Python Verification Suite (`python/ink_verifier`)
 
-The server includes a dedicated Python testing and verification engine that runs independently or via `ink_python_test_runner`:
+The server includes a dedicated Python testing and verification engine that runs independently or via `ink_run_python_tests`:
 
 ```bash
 # Run python unit tests
@@ -131,7 +133,6 @@ python -m unittest discover -s python/test
 
 # Test contrast ratio directly via CLI
 echo '{"foreground": "#ffffff", "background": "#0b0f19"}' | python -m python.ink_verifier.cli --action contrast --stdin
-
 # Test security linter
 echo '{"code": "element.innerHTML = userVal;"}' | python -m python.ink_verifier.cli --action security --stdin
 ```
