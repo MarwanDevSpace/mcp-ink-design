@@ -9,6 +9,9 @@ import { threejsTool } from "../../src/tools/threejs.tool.js";
 import { scriptTool } from "../../src/tools/script.tool.js";
 import { securityTool } from "../../src/tools/security.tool.js";
 import { validateTool } from "../../src/tools/validate.tool.js";
+import { captureTool } from "../../src/tools/capture.tool.js";
+import { inspectTool } from "../../src/tools/inspect.tool.js";
+import { assetsTool } from "../../src/tools/assets.tool.js";
 
 describe("MCP Server Contract & Public Surfaces", () => {
   it("initializes McpServer without throwing", () => {
@@ -16,14 +19,16 @@ describe("MCP Server Contract & Public Surfaces", () => {
     expect(server).toBeDefined();
   });
 
-  it("registers all 8 required tools with valid envelopes", async () => {
+  it("registers all 11 required tools with valid envelopes", async () => {
     // 1. ink_create_base
     const baseRes = await createBaseTool.execute({
       projectName: "contract-test-app",
-      designStyle: "editorial"
+      designStyle: "editorial",
+      direction: "rtl",
+      language: "ar"
     });
     expect(baseRes.status).toBe("success");
-    expect((baseRes.data as any).files["index.html"]).toBeDefined();
+    expect((baseRes.data as any).files["index.html"]).toContain('dir="rtl"');
 
     // 2. ink_design_palette_tokens
     const tokenRes = await tokensTool.execute({ mood: "editorial" });
@@ -51,10 +56,38 @@ describe("MCP Server Contract & Public Surfaces", () => {
     expect((secRes.data as any).passed).toBe(true);
 
     // 7. ink_validate_design
-    const valRes = await validateTool.execute({ code: "<main></main>", foregroundHex: "#ffffff", backgroundHex: "#000000" });
+    const valRes = await validateTool.execute({
+      code: "<main style='text-align: start; margin-inline: auto;'></main>",
+      foregroundHex: "#ffffff",
+      backgroundHex: "#000000"
+    });
     expect(valRes.status).toBe("success");
     expect((valRes.data as any).craftScore).toBeDefined();
-  });
+    expect((valRes.data as any).bidiAndAlignment).toBeDefined();
+
+    // 8. ink_import_custom_assets
+    const assetRes = await assetsTool.execute({
+      primaryFont: "Cairo",
+      weights: [400, 700]
+    });
+    expect(assetRes.status).toBe("success");
+    expect((assetRes.data as any).htmlLinkTags).toContain("Cairo");
+
+    // 9. ink_inspect_website_style
+    const inspectRes = await inspectTool.execute({
+      urlOrCode: "body { font-family: 'Amiri'; background: #0b0f19; }"
+    });
+    expect(inspectRes.status).toBe("success");
+    expect((inspectRes.data as any).archetype).toBeDefined();
+
+    // 10. ink_capture_viewport
+    const capRes = await captureTool.execute({
+      htmlOrUrl: "<html><body><h1>Contract Test</h1></body></html>",
+      title: "Contract Viewport Test"
+    });
+    expect(capRes.status).toBe("success");
+    expect((capRes.data as any).snapshots.length).toBe(3);
+  }, 20000);
 
   it("exposes ink://master/philosophy resource returning constitution text", async () => {
     const res = inkResources.find((r) => r.uri === "ink://master/philosophy");

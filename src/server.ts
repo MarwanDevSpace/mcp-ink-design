@@ -17,7 +17,10 @@ import {
   ScriptLogicInputSchema,
   SecurityAuditInputSchema,
   ValidateDesignInputSchema,
-  PythonRunnerInputSchema
+  PythonRunnerInputSchema,
+  CaptureViewportInputSchema,
+  InspectWebsiteStyleInputSchema,
+  ImportCustomAssetsInputSchema
 } from "./contracts/index.js";
 
 import { createBaseTool } from "./tools/base.tool.js";
@@ -28,6 +31,9 @@ import { scriptTool } from "./tools/script.tool.js";
 import { securityTool } from "./tools/security.tool.js";
 import { validateTool } from "./tools/validate.tool.js";
 import { pythonRunnerTool } from "./tools/python-runner.tool.js";
+import { captureTool } from "./tools/capture.tool.js";
+import { inspectTool } from "./tools/inspect.tool.js";
+import { assetsTool } from "./tools/assets.tool.js";
 import { inkResources } from "./resources/index.js";
 import { inkPrompts } from "./prompts/index.js";
 
@@ -142,6 +148,42 @@ export function createServer(): McpServer {
     async (args) => {
       logger.debug(`Executing ${pythonRunnerTool.name}`, args);
       const res = await pythonRunnerTool.execute(args);
+      return formatToolResult(res);
+    }
+  );
+
+  // 9. ink_capture_viewport
+  server.tool(
+    captureTool.name,
+    captureTool.description,
+    CaptureViewportInputSchema.shape,
+    async (args) => {
+      logger.debug(`Executing ${captureTool.name}`, args);
+      const res = await captureTool.execute(args);
+      return formatToolResult(res);
+    }
+  );
+
+  // 10. ink_inspect_website_style
+  server.tool(
+    inspectTool.name,
+    inspectTool.description,
+    InspectWebsiteStyleInputSchema.shape,
+    async (args) => {
+      logger.debug(`Executing ${inspectTool.name}`, args);
+      const res = await inspectTool.execute(args);
+      return formatToolResult(res);
+    }
+  );
+
+  // 11. ink_import_custom_assets
+  server.tool(
+    assetsTool.name,
+    assetsTool.description,
+    ImportCustomAssetsInputSchema.shape,
+    async (args) => {
+      logger.debug(`Executing ${assetsTool.name}`, args);
+      const res = await assetsTool.execute(args);
       return formatToolResult(res);
     }
   );

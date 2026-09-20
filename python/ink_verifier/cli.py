@@ -11,6 +11,9 @@ from typing import Dict, Any
 from .contrast import calculate_contrast_ratio
 from .security_linter import SecurityLinter
 from .visual_audit import VisualCraftAuditor
+from .viewport_capture import capture_all_viewports
+from .bidi_linter import BidiAlignmentAuditor
+from .site_inspector import SiteStyleInspector
 
 def run_suite(action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
     result: Dict[str, Any] = {"action": action, "status": "success"}
@@ -31,6 +34,22 @@ def run_suite(action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
         auditor = VisualCraftAuditor()
         result["data"] = auditor.audit(code)
 
+    elif action == "bidi":
+        code = payload.get("code", "")
+        auditor = BidiAlignmentAuditor()
+        result["data"] = auditor.audit(code)
+
+    elif action == "inspect":
+        target = payload.get("target") or payload.get("code") or payload.get("url") or ""
+        inspector = SiteStyleInspector()
+        result["data"] = inspector.inspect_url_or_code(target)
+
+    elif action == "capture":
+        html_or_url = payload.get("url") or payload.get("code") or payload.get("html") or "<h1>Ink Preview</h1>"
+        out_dir = payload.get("output_dir")
+        title = payload.get("title", "Site Snapshot")
+        result["data"] = capture_all_viewports(html_or_url, out_dir, title)
+
     elif action == "full":
         code = payload.get("code", "")
         fg = payload.get("foreground", "#ffffff")
@@ -38,10 +57,12 @@ def run_suite(action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
 
         auditor = VisualCraftAuditor()
         linter = SecurityLinter()
+        bidi = BidiAlignmentAuditor()
 
         result["data"] = {
             "visual_audit": auditor.audit(code),
             "security_lint": linter.lint_content(code, "full_audit"),
+            "bidi_audit": bidi.audit(code),
             "contrast_check": calculate_contrast_ratio(fg, bg)
         }
     else:
@@ -52,7 +73,11 @@ def run_suite(action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
 
 def main():
     parser = argparse.ArgumentParser(description="Ink Design Python Verifier CLI")
-    parser.add_argument("--action", choices=["contrast", "security", "visual", "audit", "full"], default="full")
+    parser.add_argument(
+        "--action",
+        choices=["contrast", "security", "visual", "audit", "full", "bidi", "inspect", "capture"],
+        default="full"
+    )
     parser.add_argument("--input-json", help="Direct JSON input payload", default=None)
     parser.add_argument("--file", help="Path to file to analyze", default=None)
     parser.add_argument("--code", help="Raw code string to analyze", default=None)

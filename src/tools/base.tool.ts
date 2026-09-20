@@ -6,34 +6,52 @@
 import { CreateBaseInput, CreateBaseInputSchema } from "../contracts/index.js";
 import { generatePalette } from "../domain/design-tokens/palette-generator.js";
 import { generateTypographySystem } from "../domain/design-tokens/typography-generator.js";
+import { generateArabicTypography } from "../domain/bidi/arabic-typography.js";
 import { createSuccessEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const createBaseTool = {
   name: "ink_create_base",
   title: "Scaffold High-Craft Base Web Architecture",
   description:
-    "Scaffold a clean, modern, semantic web project with OKLCH design tokens, fluid typography, and zero-slop architecture. Use this tool at the start of building any high-quality web experience.",
+    "Scaffold a clean, modern, semantic web project with OKLCH design tokens, fluid typography, Arabic RTL/LTR logical properties, and zero-slop architecture.",
   inputSchema: CreateBaseInputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: CreateBaseInput = CreateBaseInputSchema.parse(rawInput);
-    const { projectName, designStyle, includeThreeJs, includePwaMeta } = input;
+    const { projectName, designStyle, direction, language, arabicFont, includeThreeJs, includePwaMeta } = input;
 
     const palette = generatePalette(designStyle);
-    const typography = generateTypographySystem(
+    const latinTypography = generateTypographySystem(
       designStyle === "editorial" ? "modern-editorial" : designStyle === "neo-brutalist" ? "brutalist" : "modern-editorial"
     );
+    const arabicTypography = language !== "en" ? generateArabicTypography(arabicFont) : null;
+
+    const fontLinks = arabicTypography
+      ? `<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="${arabicTypography.googleFontsLink}&family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">`
+      : `<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">`;
+
+    const heroTitle = language === "ar"
+      ? "هندسة الويب وتصميم فائق الحرفية"
+      : language === "bilingual"
+      ? '<span>هندسة الويب الفاخرة</span> <bdi class="ink-chip">Bespoke Craft</bdi>'
+      : "Experience Web Craftsmanship in Pure Harmony";
+
+    const heroLead = language === "ar"
+      ? "مبني على أبعاد OKLCH الفيزيائية للألوان، وخطوط رياضية سائلة، وخصائص منطقية تدعم العربية والإنجليزية بانسيابية تامة."
+      : "Built on OKLCH perceptual color spaces, mathematical fluid clamp() scales, and modern CSS logical properties.";
 
     const html = `
 <!DOCTYPE html>
-<html lang="en">
+<html lang="${language === "ar" ? "ar" : "en"}" dir="${direction}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   ${includePwaMeta ? '<meta name="theme-color" content="#0b0f19">\n  <meta name="color-scheme" content="dark">' : ""}
   <title>${projectName} — Engineered with Ink Design</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Plus+Jakarta+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  ${fontLinks}
   <link rel="stylesheet" href="styles.css">
   ${includeThreeJs ? '<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>' : ""}
   <script type="module" src="main.js" defer></script>
@@ -48,11 +66,11 @@ export const createBaseTool = {
         <span>${projectName}</span>
       </a>
       <nav class="ink-nav-links">
-        <a href="#features" class="ink-nav-link">Architecture</a>
-        <a href="#showcase" class="ink-nav-link">Craft</a>
-        <a href="#docs" class="ink-nav-link">Specifications</a>
+        <a href="#features" class="ink-nav-link">${language === "ar" ? "المعمارية" : "Architecture"}</a>
+        <a href="#showcase" class="ink-nav-link">${language === "ar" ? "الحرفية" : "Craft"}</a>
+        <a href="#docs" class="ink-nav-link">${language === "ar" ? "المواصفات" : "Specs"}</a>
       </nav>
-      <a href="#action" class="ink-btn-nav">Initiate Flow</a>
+      <a href="#action" class="ink-btn-nav">${language === "ar" ? "ابدأ الآن" : "Initiate Flow"}</a>
     </div>
   </header>
 
@@ -61,15 +79,13 @@ export const createBaseTool = {
       <div class="ink-container ink-hero-content">
         <div class="ink-badge-pill">
           <span class="ink-pulse-dot"></span>
-          <span>Anti-AI-Slop Certified Design</span>
+          <span>${language === "ar" ? "معمارية معتمدة ضد الركاكة" : "Anti-AI-Slop Certified Design"}</span>
         </div>
-        <h1 class="ink-hero-title">Experience Web Craftsmanship in Pure Harmony</h1>
-        <p class="ink-hero-lead">
-          Built on OKLCH perceptual color spaces, fluid clamp() typography scales, and tactile micro-interactions.
-        </p>
+        <h1 class="ink-hero-title">${heroTitle}</h1>
+        <p class="ink-hero-lead">${heroLead}</p>
         <div class="ink-cta-group">
-          <a href="#start" class="ink-btn-primary">Explore Blueprint</a>
-          <a href="#github" class="ink-btn-secondary">View Tokens</a>
+          <a href="#start" class="ink-btn-primary">${language === "ar" ? "استكشف المخطط" : "Explore Blueprint"}</a>
+          <a href="#tokens" class="ink-btn-secondary">${language === "ar" ? "استعراض التوكنز" : "View Tokens"}</a>
         </div>
       </div>
     </section>
@@ -84,12 +100,14 @@ export const createBaseTool = {
 </html>
 `.trim();
 
+    const typoVariables = arabicTypography ? arabicTypography.cssVariables : latinTypography.cssVariables;
+
     const css = `
 ${palette.cssVariables}
 
-${typography.cssVariables}
+${typoVariables}
 
-/* Modern CSS Reset & Baseline */
+/* Modern CSS Reset & Logical Baseline */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -100,20 +118,21 @@ body.ink-body {
   min-height: 100vh;
   background-color: var(--ink-bg-surface);
   color: var(--ink-text-primary);
-  font-family: var(--ink-font-body);
+  font-family: var(--ink-font-body, var(--ink-font-ar-primary, sans-serif));
   font-size: var(--ink-text-body);
   line-height: var(--ink-leading-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   position: relative;
+  text-align: start;
 }
 
 .ink-container {
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
+  margin-inline: auto;
+  padding-inline: 1.5rem;
 }
 
 /* Navigation Bar */
@@ -289,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tokensOverview: {
           paletteTokens: palette.tokens,
           contrastReport: palette.contrastAnalysis,
-          typographySteps: Object.keys(typography.steps)
+          typographySteps: Object.keys((arabicTypography || latinTypography).steps)
         }
       },
       {

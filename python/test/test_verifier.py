@@ -6,6 +6,9 @@ import unittest
 from python.ink_verifier.contrast import calculate_contrast_ratio
 from python.ink_verifier.security_linter import SecurityLinter
 from python.ink_verifier.visual_audit import VisualCraftAuditor
+from python.ink_verifier.bidi_linter import BidiAlignmentAuditor
+from python.ink_verifier.site_inspector import SiteStyleInspector
+from python.ink_verifier.viewport_capture import capture_all_viewports
 
 class TestInkVerifier(unittest.TestCase):
     def test_contrast_ratio_black_white(self):
@@ -59,7 +62,60 @@ class TestInkVerifier(unittest.TestCase):
         """
         audit_res = auditor.audit(high_craft)
         self.assertGreaterEqual(audit_res["craft_score"], 85)
-        self.assertIn("Masterpiece", audit_res["craft_grade"] + audit_res["craft_grade"] if audit_res["craft_score"] >= 90 else audit_res["craft_grade"])
+
+    def test_bidi_linter_detects_physical_properties(self):
+        auditor = BidiAlignmentAuditor()
+        bad_css = """
+        .card {
+            margin-left: 20px;
+            padding-right: 15px;
+            text-align: left;
+        }
+        """
+        res = auditor.audit(bad_css)
+        self.assertGreaterEqual(res["total_findings"], 3)
+        categories = [f["category"] for f in res["findings"]]
+        self.assertIn("Non-Logical CSS Property", categories)
+
+    def test_bidi_linter_approves_logical_arabic_css(self):
+        auditor = BidiAlignmentAuditor()
+        clean_arabic = """
+        body {
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            margin-inline: auto;
+            padding-inline-start: 1.5rem;
+            text-align: start;
+        }
+        """
+        res = auditor.audit(clean_arabic)
+        self.assertGreaterEqual(res["bidi_score"], 85)
+        self.assertIn("S", [res["grade"], "A"])
+
+    def test_site_inspector_extracts_palette_and_fonts(self):
+        inspector = SiteStyleInspector()
+        snippet = """
+        <style>
+          :root { --bg: #0b0f19; --accent: #38bdf8; }
+          body { font-family: 'Cairo', 'Outfit', sans-serif; font-size: clamp(1rem, 2vw, 1.5rem); }
+          .card { backdrop-filter: blur(12px); border-radius: 16px; }
+        </style>
+        """
+        extracted = inspector.inspect_content(snippet)
+        self.assertIn("#0b0f19", extracted["extractedPalette"]["hexColors"])
+        self.assertIn("#38bdf8", extracted["extractedPalette"]["hexColors"])
+        self.assertTrue(extracted["hasGlassmorphism"])
+        self.assertTrue(extracted["extractedTypography"]["usesFluidClamp"])
+
+    def test_viewport_capture_generates_all_three_aspects(self):
+        html = "<html><body style='background:#0b0f19;color:#fff;'><h1>Ink Viewport Test</h1></body></html>"
+        res = capture_all_viewports(html, title="Test Spec")
+        self.assertEqual(len(res["snapshots"]), 3)
+        ids = [s["viewport_id"] for s in res["snapshots"]]
+        self.assertIn("desktop_16_9", ids)
+        self.assertIn("vertical_9_16", ids)
+        self.assertIn("mobile_view", ids)
+        self.assertTrue(res["viewportQualityChecks"]["allThreeViewportsGenerated"])
 
 if __name__ == "__main__":
     unittest.main()
+

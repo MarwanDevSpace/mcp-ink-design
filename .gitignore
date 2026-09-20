@@ -9,3 +9,4 @@ __pycache__/
 coverage/
 .env
 .env.local
+.ink_snapshots/

@@ -34,10 +34,30 @@ Most AI-generated web interfaces look generic, repetitive, and bland:
 | `ink_threejs_experience` | 3D WebGL | Generates memory-safe Three.js canvas experiences (`particle-constellation`, `geometric-wireframe`) |
 | `ink_script_logic` | Modern JS/TS | Generates zero-dependency logic modules (`state-store`, `event-bus`, `scroll-observer`, `form-validator`) |
 | `ink_security_audit` | Security Audit | Scans code for DOM XSS, eval, token leakage in localStorage, and generates tailored CSP headers |
-| `ink_validate_design` | Design QA | Computes Craft Grade (S, A, B, C), checks anti-slop rules, and evaluates contrast |
+| `ink_validate_design` | Design QA | Computes Craft Grade (S, A, B, C), checks anti-slop rules, evaluates contrast, and audits RTL/LTR logical properties |
 | `ink_python_test_runner` | External Verification | Executes the dedicated Python testing suite (`ink_verifier`) via stdin JSON pipeline |
+| `ink_capture_viewport` | Multi-Viewport QA | Captures 16:9 Desktop, 9:16 Story, and 390x844 Mobile snapshots with automated overflow checks |
+| `ink_inspect_website_style` | Reverse-Engineering | Deconstructs any website (URL or HTML/CSS) into an OKLCH palette, font hierarchy, and design blueprint |
+| `ink_import_custom_assets` | Dynamic Assets | Configures dynamic Google Fonts imports (Arabic & Latin) and generates CSS variables with optical line-heights |
 
 ---
+
+## 🌍 Arabic Typography & RTL/LTR Logical Properties
+
+`mcp-ink-design` includes first-class engineering for Arabic and bilingual web apps:
+- **Modern CSS Logical Properties**: Automatically enforces `margin-inline`, `padding-inline`, `inset-inline`, and `text-align: start` instead of hardcoded physical directions.
+- **Arabic Optical Compensation**: Line-heights for Arabic glyphs are adjusted to `1.75 - 1.85` for body text to avoid diacritic and ascender clipping.
+- **Curated Arabic Font Stacks**: `IBM Plex Sans Arabic`, `Cairo`, `Tajawal`, `Readex Pro`, and `Amiri`.
+- **Bidi Isolation**: Automated `<bdi>` wrapping and `unicode-bidi: isolate` prevent punctuation jumping in mixed-language code snippets.
+
+---
+
+## 📸 Multi-Viewport Capture (16:9, 9:16, Mobile)
+
+After modifying any layout, `ink_capture_viewport` captures:
+1. **16:9 Landscape (1600x900 / 1920x1080)**: Desktop container validation.
+2. **9:16 Tall Story (540x960 / 1080x1920)**: Vertical social and mobile story view.
+3. **Standard Mobile (390x844)**: Responsive mobile layout check, ensuring zero horizontal scrollbar leaks.
 
 ## 📖 MCP Resources (`resources/list`)
 

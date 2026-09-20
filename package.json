@@ -1,6 +1,6 @@
 {
   "name": "mcp-ink-design",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Model Context Protocol (MCP) server for high-craft web design, anti-AI-slop typography & OKLCH color palettes, Three.js 3D scenes, frontend security audits, and Python-backed verification.",
   "type": "module",
   "main": "dist/index.js",

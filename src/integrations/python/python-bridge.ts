@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export interface PythonRunnerOptions {
-  action: "contrast" | "security" | "visual" | "audit" | "full";
+  action: "contrast" | "security" | "visual" | "audit" | "full" | "bidi" | "inspect" | "capture";
   payload: Record<string, unknown>;
   pythonPath?: string;
   timeoutMs?: number;
