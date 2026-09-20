@@ -1,0 +1,4 @@
+# Ink Verifier Core uses Python 3.10+ standard libraries (zero mandatory dependencies)
+# Optional extensions for advanced headless browser audits:
+# playwright>=1.40.0
+# pytest>=7.4.0
