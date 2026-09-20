@@ -43,7 +43,7 @@ export function createServer(): McpServer {
           text: JSON.stringify(envelope, null, 2)
         }
       ],
-      structuredContent: envelope as Record<string, unknown>
+      structuredContent: envelope as unknown as Record<string, unknown>
     };
   };
 
