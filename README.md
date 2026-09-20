@@ -133,7 +133,6 @@ python -m unittest discover -s python/test
 
 # Test contrast ratio directly via CLI
 echo '{"foreground": "#ffffff", "background": "#0b0f19"}' | python -m python.ink_verifier.cli --action contrast --stdin
-
 # Test security linter
 echo '{"code": "element.innerHTML = userVal;"}' | python -m python.ink_verifier.cli --action security --stdin
 ```
