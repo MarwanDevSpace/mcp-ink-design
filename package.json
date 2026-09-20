@@ -22,7 +22,19 @@
     "dev": "tsx src/index.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:python": "python -m unittest discover -s python/test"
+    "test:python": "python -m unittest discover -s python/test",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarwanDevSpace/mcp-ink-design.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MarwanDevSpace/mcp-ink-design/issues"
+  },
+  "homepage": "https://github.com/MarwanDevSpace/mcp-ink-design#readme",
+  "publishConfig": {
+    "access": "public"
   },
   "keywords": [
     "mcp",
