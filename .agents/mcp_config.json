@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mcp-ink-design": {
+      "command": "node",
+      "args": [
+        "./dist/index.js"
+      ],
+      "env": {
+        "INK_LOG_LEVEL": "info",
+        "INK_PYTHON_PATH": "python"
+      }
+    }
+  }
+}
