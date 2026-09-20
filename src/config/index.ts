@@ -13,7 +13,7 @@ export interface ServerConfig {
 export function loadConfig(): ServerConfig {
   return {
     serverName: "mcp-ink-design",
-    serverVersion: "1.1.0",
+    serverVersion: "1.2.0",
     logLevel: (process.env.INK_LOG_LEVEL as ServerConfig["logLevel"]) || "info",
     pythonExecutable: process.env.INK_PYTHON_PATH || "python",
     projectRoot: process.cwd()

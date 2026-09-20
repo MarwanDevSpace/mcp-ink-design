@@ -27,7 +27,7 @@ describe("Python Bridge & External Suite Integration", () => {
     expect(data.total_findings).toBeGreaterThanOrEqual(2);
   });
 
-  it("runs the full ink_python_test_runner tool with envelope wrapping", async () => {
+  it("runs the full ink_run_python_tests tool with envelope wrapping", async () => {
     const envelope = await pythonRunnerTool.execute({
       action: "full",
       code: "<header><nav></nav></header><main style='font-size: clamp(1rem, 2vw, 2rem)'></main>",
