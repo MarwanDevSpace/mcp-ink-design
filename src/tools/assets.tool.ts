@@ -1,18 +1,20 @@
-/**
- * Tool: ink_import_custom_assets
- * Generates dynamic font imports and customizable element configuration.
- */
-
-import { ImportCustomAssetsInput, ImportCustomAssetsInputSchema } from "../contracts/index.js";
+import {
+  ImportCustomAssetsInput,
+  ImportCustomAssetsInputSchema,
+  ImportCustomAssetsOutputSchema,
+  ReadOnlyAnnotations
+} from "../contracts/index.js";
 import { generateCustomFontImports } from "../domain/assets/font-importer.js";
 import { createSuccessEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const assetsTool = {
   name: "ink_import_custom_assets",
-  title: "Import & Configure Custom Fonts and Elements",
+  title: "Import & Configure Web Fonts and Assets",
   description:
-    "Dynamically import and configure Google Fonts or custom web fonts (Arabic and Latin), generating preconnect HTML link tags, CSS @import rules, optical line-height variables, and accessible fallback stacks.",
+    "PURPOSE: Dynamically configure and generate Google Fonts preconnect tags, CSS @import rules, optical line-height variables, and accessible font fallbacks for multilingual Arabic and Latin projects.\n\nBEHAVIOR: Generates HTML link tags, CSS @import rules, and stylesheet font-family declarations purely in-memory. Does not download font binaries or write files to disk directly. Formulates tailored optical line-height variables (1.7-1.85 for Arabic, 1.5-1.6 for Latin) to eliminate clipping.\n\nUSAGE GUIDELINES:\n- When to use: Call when setting up web fonts, adding Arabic typographic scales, or loading bespoke font families into a project.\n- When NOT to use: Do NOT use to synthesize fluid clamp font-size scales (use ink_generate_palette_tokens instead) or to scaffold an entire project (use ink_create_base instead).\n- Alternatives: Use ink_generate_palette_tokens for fluid typography size scales; use ink_create_base for full HTML document scaffolding.\n\nRETURNS: ResultEnvelope containing 'htmlLinkTags', 'cssImportRule', 'cssVariables' with font-family definitions, and an accessible 'fallbackStack'.",
+  annotations: ReadOnlyAnnotations,
   inputSchema: ImportCustomAssetsInputSchema,
+  outputSchema: ImportCustomAssetsOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: ImportCustomAssetsInput = ImportCustomAssetsInputSchema.parse(rawInput);
     const result = generateCustomFontImports({

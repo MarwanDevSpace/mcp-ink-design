@@ -1,18 +1,20 @@
-/**
- * Tool: ink_capture_viewport
- * Captures 16:9, 9:16, and Mobile viewports using headless browser with isolated temp profiles.
- */
-
-import { CaptureViewportInput, CaptureViewportInputSchema } from "../contracts/index.js";
+import {
+  CaptureViewportInput,
+  CaptureViewportInputSchema,
+  CaptureViewportOutputSchema,
+  ViewportCaptureAnnotations
+} from "../contracts/index.js";
 import { PythonBridge } from "../integrations/python/python-bridge.js";
 import { createSuccessEnvelope, createErrorEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const captureTool = {
   name: "ink_capture_viewport",
-  title: "Capture Multi-Viewport Responsive Snapshots (16:9, 9:16, Mobile)",
+  title: "Capture Multi-Viewport Responsive Snapshots",
   description:
-    "Capture 3 high-resolution viewport snapshots (16:9 Desktop Landscape, 9:16 Vertical Story, and 390x844 Mobile View) after code modifications to verify layout integrity, prevent overflow leaks, and validate responsiveness.",
+    "PURPOSE: Capture 3 high-resolution viewport snapshots (16:9 Desktop Landscape 1920x1080, 9:16 Vertical Story 1080x1920, and Mobile View 390x844) via headless Chromium to verify layout integrity, responsiveness, and optical centering.\n\nBEHAVIOR: Launches local headless Chromium with an isolated temporary user-data profile. Renders the provided HTML string or URL, waits for network idle, and writes 3 PNG image files to the target outputDirectory (defaults to '.ink_snapshots/'). Detects horizontal scrollbar leaks and viewport overflow. Requires local Chromium/Chrome installed.\n\nUSAGE GUIDELINES:\n- When to use: Call after making HTML/CSS modifications or finishing a component to visually confirm that elements align properly across desktop, mobile, and tall vertical screens.\n- When NOT to use: Do NOT use for fast code syntax or contrast checks without browser rendering (use ink_validate_design instead).\n- Alternatives: Use ink_validate_design for fast static design linting; use ink_inspect_website_style to reverse-engineer design tokens from live URLs.\n\nRETURNS: ResultEnvelope containing structured 'snapshots' list (with label, viewport, exact dimensions, file path, and size) and layout overflow metrics.",
+  annotations: ViewportCaptureAnnotations,
   inputSchema: CaptureViewportInputSchema,
+  outputSchema: CaptureViewportOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: CaptureViewportInput = CaptureViewportInputSchema.parse(rawInput);
 

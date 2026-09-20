@@ -45,34 +45,45 @@
 
 ```mermaid
 graph TD
-    A["1. فهم الطلب والهوية البصرية"] --> B["ink_design_palette_tokens<br/>توليد لوحة الألوان وتوكنز OKLCH والطباعة"]
+    A["1. فهم الطلب والهوية البصرية"] --> B["ink_generate_palette_tokens<br/>توليد لوحة الألوان وتوكنز OKLCH والطباعة"]
     B --> C["ink_create_base<br/>تأسيس الهيكل العام المعماري النظيف"]
     C --> D["ink_craft_component<br/>صياغة المكونات الحرفية والتفاعلات"]
-    D --> E["ink_script_logic<br/>كتابة منطق الحالة والأحداث الخالي من التسريب"]
-    D -.-> F["ink_threejs_experience<br/>إضافة المشهد ثلاثي الأبعاد التفاعلي (اختياري)"]
-    E --> G["ink_security_audit<br/>تدقيق الأمان، CSP، الـ Auth، وحماية الـ DOM"]
-    F --> G
-    G --> H["ink_validate_design<br/>التحقق من نسب الأبعاد والتباين وجودة التصميم"]
-    H --> I["ink_python_test_runner<br/>تشغيل بيئة الاختبارات الخارجية المستقلة (Python)"]
+    D --> E["ink_generate_script_logic<br/>كتابة منطق الحالة والأحداث الخالي من التسريب"]
+    D -.-> F["ink_build_threejs_experience<br/>إضافة المشهد ثلاثي الأبعاد التفاعلي (اختياري)"]
+    D -.-> G["ink_import_custom_assets<br/>استيراد الخطوط والأصول المخصصة"]
+    D -.-> H["ink_inspect_website_style<br/>استخراج أسلوب تصاميم مرجعية"]
+    E --> I["ink_audit_security<br/>تدقيق الأمان، CSP، الـ Auth، وحماية الـ DOM"]
+    F --> I
+    G --> I
+    H --> I
+    I --> J["ink_validate_design<br/>التحقق من نسب الأبعاد والتباين وجودة التصميم"]
+    J --> K["ink_capture_viewport<br/>التقاط صور الـ Viewport الثلاث (16:9, 9:16, mobile)"]
+    K --> L["ink_run_python_tests<br/>تشغيل بيئة الاختبارات الخارجية المستقلة (Python)"]
 ```
 
-### تفصيل مهام كل أداة في السلسلة:
-1. `ink_design_palette_tokens`:
-   - تُستدعى أولاً لتحديد البصمة اللونية، التدرجات الضوئية، وحسابات الـ CSS Custom Properties.
+### تفصيل مهام كل أداة في السلسلة (All 11 Tools):
+1. `ink_generate_palette_tokens`:
+   - تُستدعى لتحديد البصمة اللونية، التدرجات الضوئية، وحسابات الـ CSS Custom Properties بتباين WCAG AAA.
 2. `ink_create_base`:
    - تُستدعى لبناء الهيكل الدلالي (Semantic HTML5 / Clean Architecture)، وتضمين الميتا وربط التوكنز.
 3. `ink_craft_component`:
-   - صياغة أجزاء الواجهة (Cards, Navigation, Hero, Banners, Interactive Controls) مع ضمان الملمس الفاخر.
-4. `ink_script_logic`:
-   - صياغة المنطق بلغة JavaScript/TypeScript نقية وذكية بدون مكتبات خارجية غير مبررة، مع نمط Pub/Sub أو Signals.
-5. `ink_threejs_experience`:
-   - بناء المشاهد التفاعلية (Canvas, Particles, Lighting, GLSL shaders) مع إدارة استهلاك الذاكرة وحجم النافذة `resize`.
-6. `ink_security_audit`:
-   - مراجعة سياسات CSP، رؤوس الأمان (Security Headers)، التحقق من حماية الـ DOM ضد XSS، وتأمين تدفقات المصادقة (Auth Tokens, Cookies, CORS).
-7. `ink_validate_design`:
-   - فحص الكود النهائي، استخراج مؤشر مكافحة الركاكة (Anti-Slop Score)، ومطابقة معايير التباين والأبعاد.
-8. `ink_python_test_runner`:
-   - تشغيل أدوات بايثون المستقلة لإجراء فحوصات حاسوبية وتحليل AST واختبارات بصرية خارجية.
+   - صياغة أجزاء الواجهة (Cards, Navigation, Hero, Banners, Interactive Controls) مع ضمان الملمس الفاخر والخصائص المنطقية.
+4. `ink_generate_script_logic`:
+   - صياغة المنطق بلغة JavaScript/TypeScript نقية وذكية بدون مكتبات خارجية، مع أنماط الذاكرة الآمنة (Store, Bus, Observer, Theme).
+5. `ink_build_threejs_experience`:
+   - بناء المشاهد التفاعلية (Canvas, Particles, Lighting) مع إدارة استهلاك الذاكرة وحجم النافذة `resize` ودورة Teardown كاملة.
+6. `ink_import_custom_assets`:
+   - استيراد الخطوط وتوليد وسوم Preconnect و CSS @import مع ضبط ارتفاع الأسطر البصري والبدائل السلسة.
+7. `ink_inspect_website_style`:
+   - تفكيك وفحص أي موقع خارجي أو شفرة لاستخراج باليتة OKLCH والخطوط والأبعاد وتحويلها لتوكنز حديثة.
+8. `ink_audit_security`:
+   - مراجعة سياسات CSP، رؤوس الأمان (Security Headers)، التحقق من حماية الـ DOM ضد XSS، وتأمين تدفقات المصادقة.
+9. `ink_validate_design`:
+   - فحص الكود النهائي، استخراج مؤشر مكافحة الركاكة (Anti-Slop Score)، ومطابقة معايير التباين والأبعاد والخصائص المنطقية RTL/LTR.
+10. `ink_capture_viewport`:
+    - التقاط 3 لقطات حقيقية للموقع بدقة عالية (16:9 شاشات عريضة، 9:16 طولية، 390x844 موبايل) لكشف أي خلل بصري أو تسرب عرضي.
+11. `ink_run_python_tests`:
+    - تشغيل جناح بايثون المستقل لإجراء فحوصات حاسوبية عميقة وتحليل AST ومصفوفات تباين الألوان المعقدة.
 
 ---
 

@@ -1,19 +1,21 @@
-/**
- * Tool: ink_inspect_website_style
- * Reverse-engineers design DNA from external URLs or HTML/CSS code snippets.
- */
-
-import { InspectWebsiteStyleInput, InspectWebsiteStyleInputSchema } from "../contracts/index.js";
+import {
+  InspectWebsiteStyleInput,
+  InspectWebsiteStyleInputSchema,
+  InspectWebsiteStyleOutputSchema,
+  OpenWorldReadOnlyAnnotations
+} from "../contracts/index.js";
 import { inspectDesignStyle } from "../domain/inspection/style-extractor.js";
 import { PythonBridge } from "../integrations/python/python-bridge.js";
 import { createSuccessEnvelope, createErrorEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const inspectTool = {
   name: "ink_inspect_website_style",
-  title: "Reverse-Engineer & Inspect Website Design Style",
+  title: "Inspect & Reverse-Engineer Website Style",
   description:
-    "Deconstruct any website (via URL or HTML/CSS code) to extract its color palette, fonts, shadows, and layout DNA, generating an actionable OKLCH upgrade blueprint.",
+    "PURPOSE: Deconstruct existing live websites or HTML/CSS templates to reverse-engineer color palettes, typography scales, elevation shadows, and layout DNA into modern OKLCH tokens.\n\nBEHAVIOR: Fetches public website markup over HTTPS or parses local HTML/CSS code strings in-memory. Strictly read-only with zero disk modifications. Remote network requests enforce a 10s timeout, safe redirect limits, and private subnet IP blocking. Converts extracted HEX/RGB values into perceptual OKLCH color variables.\n\nUSAGE GUIDELINES:\n- When to use: Use when analyzing a reference website or mockup to extract its visual hierarchy, typography system, and color ramps.\n- When NOT to use: Do NOT use to generate novel color tokens from scratch (use ink_generate_palette_tokens instead) or to evaluate code for anti-slop compliance (use ink_validate_design instead).\n- Alternatives: Use ink_generate_palette_tokens to synthesize new design tokens; use ink_capture_viewport to capture visual screenshots.\n\nRETURNS: ResultEnvelope containing detected 'archetype', extracted 'colors' (with HEX and OKLCH conversions), 'typography' hierarchy, 'shadows', 'layoutDna', and an actionable recommended OKLCH palette stylesheet.",
+  annotations: OpenWorldReadOnlyAnnotations,
   inputSchema: InspectWebsiteStyleInputSchema,
+  outputSchema: InspectWebsiteStyleOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: InspectWebsiteStyleInput = InspectWebsiteStyleInputSchema.parse(rawInput);
     const isUrl = input.urlOrCode.startsWith("http://") || input.urlOrCode.startsWith("https://");
@@ -53,7 +55,7 @@ export const inspectTool = {
         {
           nextActions: [
             "Review extracted colors and typography stacks.",
-            "Use ink_design_palette_tokens with tailored baseHue to generate high-craft tokens."
+            "Use ink_generate_palette_tokens with tailored baseHue to generate high-craft tokens."
           ]
         }
       );

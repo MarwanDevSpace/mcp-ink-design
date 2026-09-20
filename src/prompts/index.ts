@@ -49,7 +49,7 @@ Follow the INK_MASTER principles:
 1. Select a tailored OKLCH color harmony with calculated contrast (no generic AI purple/blue gradients).
 2. Establish a fluid clamp() typography scale.
 3. Outline the component hierarchy (Hero, Cards, Micro-interactions).
-4. Run the ink_design_palette_tokens and ink_create_base tools to generate the foundation.`
+4. Run the ink_generate_palette_tokens and ink_create_base tools to generate the foundation.`
             }
           }
         ]
@@ -80,8 +80,8 @@ ${args.code_snippet || ""}
 \`\`\`
 
 1. Invoke ink_validate_design to score the craft quality and check contrast.
-2. Invoke ink_security_audit to detect DOM XSS, eval, and auth storage risks.
-3. Invoke ink_python_test_runner with action 'full' for external verification.
+2. Invoke ink_audit_security to detect DOM XSS, eval, and auth storage risks.
+3. Invoke ink_run_python_tests with action 'full' for external verification.
 4. Produce a prioritized remediation diff.`
             }
           }

@@ -1,9 +1,9 @@
-/**
- * Tool: ink_validate_design
- * Audits frontend code for craftsmanship, anti-slop rules, and contrast ratios.
- */
-
-import { ValidateDesignInput, ValidateDesignInputSchema } from "../contracts/index.js";
+import {
+  ValidateDesignInput,
+  ValidateDesignInputSchema,
+  ValidateDesignOutputSchema,
+  ReadOnlyAnnotations
+} from "../contracts/index.js";
 import { validateDesignCraft } from "../domain/verification/design-validator.js";
 import { calculateContrastRatio } from "../domain/design-tokens/color-math.js";
 import { auditLogicalProperties } from "../domain/bidi/logical-properties.js";
@@ -11,10 +11,12 @@ import { createSuccessEnvelope, ResultEnvelope } from "../core/result-envelope.j
 
 export const validateTool = {
   name: "ink_validate_design",
-  title: "Validate Design Craft & Anti-AI-Slop Compliance",
+  title: "Validate Design Craft & Contrast Compliance",
   description:
-    "Evaluate web code against anti-AI-slop rules (generic gradient tropes, fluid clamp typography, layered shadows, semantic HTML), verify WCAG contrast ratios, and audit Arabic RTL/LTR logical properties.",
+    "PURPOSE: Evaluate HTML and CSS code against anti-AI-slop design heuristics (detecting generic AI purple gradients, hardcoded pixel font sizes, missing semantic tags), verify WCAG AAA color contrast ratios, and audit Arabic RTL/LTR logical properties.\n\nBEHAVIOR: Executes in-memory static AST and regex analysis on the supplied code strings. Completely read-only with zero filesystem writes, no network requests, and deterministic score computation. Emits a letter grade (S, A, B, C, F), numerical score (0-100), and specific remediation diff advice.\n\nUSAGE GUIDELINES:\n- When to use: Call after creating or modifying web layouts, components, or stylesheets to verify craft quality, contrast compliance, and bidi readiness before committing.\n- When NOT to use: Do NOT use for JavaScript security vulnerability scanning (use ink_audit_security instead) or for capturing real-browser screenshots (use ink_capture_viewport instead).\n- Alternatives: Use ink_audit_security for security/XSS checks; use ink_capture_viewport for visual multi-viewport screenshot verification.\n\nRETURNS: ResultEnvelope containing 'craftScore', 'craftGrade', 'isHighCraft' boolean, 'antiSlopChecks' results, computed 'contrast' analysis, 'bidiAndAlignment' report, and prioritized 'remediationAdvice'.",
+  annotations: ReadOnlyAnnotations,
   inputSchema: ValidateDesignInputSchema,
+  outputSchema: ValidateDesignOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: ValidateDesignInput = ValidateDesignInputSchema.parse(rawInput);
     const craft = validateDesignCraft(input.code);

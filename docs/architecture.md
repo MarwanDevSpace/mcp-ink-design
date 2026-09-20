@@ -35,14 +35,17 @@ src/
 3. `server.ts` acts solely as an assembly point.
 4. `core/logger.ts` writes exclusively to `stderr` to maintain protocol purity on `stdout`.
 
-## 3. Tool Invocation Pipeline
+## 3. Tool Invocation Pipeline (All 11 Standardized Tools)
 
 The recommended choreography for building or enhancing a web page:
-1. `ink_design_palette_tokens`: Generate OKLCH tokens and fluid typography.
+1. `ink_generate_palette_tokens`: Generate OKLCH tokens and fluid typography.
 2. `ink_create_base`: Scaffold semantic HTML5 layout and CSS structure.
 3. `ink_craft_component`: Generate tactile components (Hero, Cards, Buttons, Nav).
-4. `ink_script_logic`: Implement zero-dependency client state/events.
-5. `ink_threejs_experience`: Mount interactive 3D WebGL hero background.
-6. `ink_security_audit`: Verify CSP, sanitize DOM, review Auth flows.
-7. `ink_validate_design`: Verify craft score and WCAG AAA contrast ratios.
-8. `ink_python_test_runner`: Run deep headless verification via Python suite.
+4. `ink_generate_script_logic`: Implement zero-dependency client state/events.
+5. `ink_build_threejs_experience`: Mount interactive 3D WebGL hero background.
+6. `ink_import_custom_assets`: Import and configure multilingual web fonts and fallbacks.
+7. `ink_inspect_website_style`: Deconstruct reference website styling into OKLCH tokens.
+8. `ink_audit_security`: Verify CSP, sanitize DOM, review Auth flows.
+9. `ink_validate_design`: Verify craft score, WCAG AAA contrast ratios, and RTL/LTR properties.
+10. `ink_capture_viewport`: Capture 16:9, 9:16, and mobile snapshots for layout verification.
+11. `ink_run_python_tests`: Run deep headless verification via Python suite.

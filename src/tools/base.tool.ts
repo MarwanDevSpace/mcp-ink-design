@@ -3,7 +3,12 @@
  * Scaffolds high-craft modern web application foundation without boilerplate slop.
  */
 
-import { CreateBaseInput, CreateBaseInputSchema } from "../contracts/index.js";
+import {
+  CreateBaseInput,
+  CreateBaseInputSchema,
+  CreateBaseOutputSchema,
+  ReadOnlyAnnotations
+} from "../contracts/index.js";
 import { generatePalette } from "../domain/design-tokens/palette-generator.js";
 import { generateTypographySystem } from "../domain/design-tokens/typography-generator.js";
 import { generateArabicTypography } from "../domain/bidi/arabic-typography.js";
@@ -11,10 +16,12 @@ import { createSuccessEnvelope, ResultEnvelope } from "../core/result-envelope.j
 
 export const createBaseTool = {
   name: "ink_create_base",
-  title: "Scaffold High-Craft Base Web Architecture",
+  title: "Scaffold Web Application Foundation",
   description:
-    "Scaffold a clean, modern, semantic web project with OKLCH design tokens, fluid typography, Arabic RTL/LTR logical properties, and zero-slop architecture.",
+    "PURPOSE: Scaffold a complete, production-grade semantic web application foundation featuring OKLCH color token architecture, fluid typography scales, modern CSS logical properties, and bilingual Arabic RTL/LTR layout balance.\n\nBEHAVIOR: Generates complete in-memory application files (index.html, styles.css, main.js) within the structured result envelope. Operates purely in-memory with zero direct filesystem side effects; callers receive the code ready to be written to disk. Requires no external credentials or elevated permissions.\n\nUSAGE GUIDELINES:\n- When to use: Call at the start of a web project to establish root HTML semantics, CSS custom property foundations, viewport meta tags, and font configurations.\n- When NOT to use: Do NOT use to craft isolated UI widgets (use ink_craft_component instead) or to synthesize standalone color variables without project markup (use ink_generate_palette_tokens instead).\n- Alternatives: Use ink_craft_component for individual components; use ink_generate_palette_tokens for standalone CSS color tokens.\n\nRETURNS: ResultEnvelope containing structured 'files' dictionary (index.html, styles.css, main.js), OKLCH tokensOverview, contrast verification analysis, and typography scales.",
+  annotations: ReadOnlyAnnotations,
   inputSchema: CreateBaseInputSchema,
+  outputSchema: CreateBaseOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: CreateBaseInput = CreateBaseInputSchema.parse(rawInput);
     const { projectName, designStyle, direction, language, arabicFont, includeThreeJs, includePwaMeta } = input;
@@ -314,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
       {
         nextActions: [
           "Call ink_craft_component to build custom interactive components (cards, metrics, navbars).",
-          "Call ink_threejs_experience to mount an interactive 3D WebGL hero canvas.",
+          "Call ink_build_threejs_experience to mount an interactive 3D WebGL hero canvas.",
           "Call ink_validate_design to verify anti-slop score and contrast compliance."
         ]
       }

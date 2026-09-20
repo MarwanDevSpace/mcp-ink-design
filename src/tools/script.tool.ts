@@ -1,17 +1,19 @@
-/**
- * Tool: ink_script_logic
- * Generates robust, zero-leak JavaScript and TypeScript runtime logic.
- */
-
-import { ScriptLogicInput, ScriptLogicInputSchema } from "../contracts/index.js";
+import {
+  ScriptLogicInput,
+  ScriptLogicInputSchema,
+  ScriptLogicOutputSchema,
+  ReadOnlyAnnotations
+} from "../contracts/index.js";
 import { createSuccessEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const scriptTool = {
-  name: "ink_script_logic",
-  title: "Generate Smart JavaScript / TypeScript Logic",
+  name: "ink_generate_script_logic",
+  title: "Generate Modular Architecture Logic",
   description:
-    "Generate zero-dependency, memory-safe modern JavaScript/TypeScript architectural modules (State Store, Event Bus, Intersection Observer, Theme Switcher, Form Validator).",
+    "PURPOSE: Generate zero-dependency, memory-safe JavaScript and TypeScript architectural modules (State Store, Event Bus, Intersection Scroll Observer, Theme Switcher, Form Validator) with production error boundaries.\n\nBEHAVIOR: Synthesizes modular ES6+ JavaScript and optional TypeScript declarations purely in-memory. Zero filesystem modifications. All generated code enforces memory cleanup paradigms (explicit unsubscribe functions, WeakMap caching, EventTarget/listener teardown).\n\nUSAGE GUIDELINES:\n- When to use: Use when creating application state management, event-driven decoupled messaging, viewport scroll animators, theme togglers, or accessible form validation.\n- When NOT to use: Do NOT use to render UI elements or write component styling (use ink_craft_component instead) or WebGL graphics (use ink_build_threejs_experience instead).\n- Alternatives: Use ink_craft_component for visual UI components; use ink_build_threejs_experience for 3D canvas rendering.\n\nRETURNS: ResultEnvelope containing zero-dependency ES module 'code', optional 'typescriptTypes', architectural pattern documentation, and executable 'usageExample'.",
+  annotations: ReadOnlyAnnotations,
   inputSchema: ScriptLogicInputSchema,
+  outputSchema: ScriptLogicOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: ScriptLogicInput = ScriptLogicInputSchema.parse(rawInput);
     const { pattern, moduleName, typescript } = input;

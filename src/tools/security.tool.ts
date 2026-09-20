@@ -1,18 +1,20 @@
-/**
- * Tool: ink_security_audit
- * Audits code against OWASP client-side threats, DOM XSS, and security headers.
- */
-
-import { SecurityAuditInput, SecurityAuditInputSchema } from "../contracts/index.js";
+import {
+  SecurityAuditInput,
+  SecurityAuditInputSchema,
+  SecurityAuditOutputSchema,
+  ReadOnlyAnnotations
+} from "../contracts/index.js";
 import { auditCodeSecurity } from "../domain/security/security-engine.js";
 import { createSuccessEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const securityTool = {
-  name: "ink_security_audit",
-  title: "Audit Web Code Security & Auth Patterns",
+  name: "ink_audit_security",
+  title: "Audit Frontend Code Security & Headers",
   description:
-    "Audit frontend/fullstack code for DOM XSS, dangerous sinks (eval, innerHTML), auth token storage risks, missing security headers, and CSP recommendations.",
+    "PURPOSE: Audit frontend and full-stack web code for client-side security vulnerabilities (DOM XSS, eval/Function sinks, innerHTML execution, plain-text token storage in localStorage, missing security headers, and strict CSP generation).\n\nBEHAVIOR: Executes AST and regex static security scanning in-memory. Purely read-only; never executes or mutates the audited code, and never transmits source code over external networks. Emits severity ratings (critical, high, medium, low) and exact code remediations.\n\nUSAGE GUIDELINES:\n- When to use: Use prior to deployment or code review to ensure zero client-side injection vulnerabilities, secure token handling, and robust Content-Security-Policy headers.\n- When NOT to use: Do NOT use to validate CSS aesthetic quality, color contrast, or fluid typography rules (use ink_validate_design instead), nor for external URL penetration testing.\n- Alternatives: Use ink_validate_design for design system, contrast, and bidi compliance checks; use ink_run_python_tests for Python AST test suites.\n\nRETURNS: ResultEnvelope containing 'securityScore', pass/fail boolean, structured 'findings' array with line numbers and remediations, recommended 'recommendedCspHeader', and safe authentication storage patterns.",
+  annotations: ReadOnlyAnnotations,
   inputSchema: SecurityAuditInputSchema,
+  outputSchema: SecurityAuditOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: SecurityAuditInput = SecurityAuditInputSchema.parse(rawInput);
     const auditResult = auditCodeSecurity(input.code);
