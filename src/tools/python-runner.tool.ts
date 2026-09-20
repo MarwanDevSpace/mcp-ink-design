@@ -1,18 +1,20 @@
-/**
- * Tool: ink_python_test_runner
- * Executes the dedicated Python external verification suite for deep analysis.
- */
-
-import { PythonRunnerInput, PythonRunnerInputSchema } from "../contracts/index.js";
+import {
+  PythonRunnerInput,
+  PythonRunnerInputSchema,
+  PythonRunnerOutputSchema,
+  ReadOnlyAnnotations
+} from "../contracts/index.js";
 import { PythonBridge } from "../integrations/python/python-bridge.js";
 import { createSuccessEnvelope, createErrorEnvelope, ResultEnvelope } from "../core/result-envelope.js";
 
 export const pythonRunnerTool = {
-  name: "ink_python_test_runner",
-  title: "Run External Python Verification Suite",
+  name: "ink_run_python_tests",
+  title: "Run Python AST & Contrast Verification Suite",
   description:
-    "Execute external Python-based automated testing for visual anti-slop heuristics, AST security linter, and contrast matrix verification.",
+    "PURPOSE: Execute the external Python verification suite for deep AST static analysis, mathematical contrast matrix calculation, and headless layout audits.\n\nBEHAVIOR: Spawns the local Python 3 ink_verifier engine in a sandboxed subprocess. Purely read-only; does not mutate source files or modify disk state unless 'capture' is specifically invoked. Requires Python 3.10+ installed in the environment PATH. Returns comprehensive structured test metrics.\n\nUSAGE GUIDELINES:\n- When to use: Use when running deep multi-pass Python AST analysis, mathematical APCA/WCAG contrast calculation, or comprehensive verification across an entire codebase.\n- When NOT to use: Do NOT use for fast in-memory CSS validation without Python (use ink_validate_design instead) or for standalone client-side security audits (use ink_audit_security instead).\n- Alternatives: Use ink_validate_design for fast TypeScript-native design verification; use ink_audit_security for native security scanning.\n\nRETURNS: ResultEnvelope containing structured test outcomes from the Python verifier engine according to the invoked action ('contrast', 'security', 'visual', 'audit', 'full', 'bidi', 'inspect', or 'capture').",
+  annotations: ReadOnlyAnnotations,
   inputSchema: PythonRunnerInputSchema,
+  outputSchema: PythonRunnerOutputSchema,
   execute: async (rawInput: unknown): Promise<ResultEnvelope<unknown>> => {
     const input: PythonRunnerInput = PythonRunnerInputSchema.parse(rawInput);
 
