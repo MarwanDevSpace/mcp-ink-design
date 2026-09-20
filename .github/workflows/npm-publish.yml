@@ -1,16 +1,21 @@
-name: Publish to NPM
+name: Publish to NPM & Release
 
 on:
   release:
-    types: [created]
+    types: [published]
+  push:
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
-  publish:
+  build-and-publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
+      packages: write
       id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,18 +24,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build distribution bundle
-        run: npm run build
+      - name: Run TypeScript typecheck
+        run: npm run typecheck
 
-      - name: Run verification test suite
+      - name: Run Vitest tests
         run: npm test
 
+      - name: Build distribution package
+        run: npm run build
+
       - name: Publish to NPM
-        run: npm publish --access public
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
